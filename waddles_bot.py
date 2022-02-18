@@ -3,7 +3,6 @@ import discord
 from dotenv import load_dotenv
 import random
 import csv
-import pandas
 
 load_dotenv()
 TOKEN = os.getenv('bot_token')
