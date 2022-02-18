@@ -1,0 +1,1 @@
+worker: python waddles_bot.py
