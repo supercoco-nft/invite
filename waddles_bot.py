@@ -205,9 +205,12 @@ async def on_message(message):
                                 #if member == None:
                                 #    member = message.author
                                 role = discord.utils.get(member.guild.roles, name="BE MEMBERS")
-                                await member.add_roles(role)
-                                print("added the creator to the 'BE MEMBERS' role")
-                                
+                                if role != None:
+                                    await member.add_roles(role)
+                                    await channel.send("added the creator to the 'BE MEMBERS' role")
+                                else:
+                                    await channel.send("[-]Creator was not found")
+                                    
                             current_score = str(current_score)
                             organized_scores[place][1] = current_score
 
