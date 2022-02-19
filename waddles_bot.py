@@ -214,6 +214,7 @@ async def on_message(message):
                         else:
                                                     ##name, score, member(0 == False)
                             organized_scores.append([creator, "1", "0"])
+                            #await channel.send("Con
 
                         f  = open("score_tracker.csv", "w")
                         writer = csv.writer(f)
@@ -233,13 +234,15 @@ async def on_message(message):
 
                     else:
                         await channel.send("You cannot invite yourself")
-                if code_found == True:
-                    await channel.send("[+] You're in!!!")
-
+                        return
                         
+            if code_found == True:
+                await channel.send("[+] You're in!!!")
+
                     
-                else:
-                    await channel.send("[-] Code is not valid")
+                
+            else:
+                await channel.send("[-] Code is not valid")
 
         elif str(channel) == full_check_name:
             if (message.content).lower() == "/invites":
