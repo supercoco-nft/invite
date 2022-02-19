@@ -261,7 +261,9 @@ async def on_message(message):
                         if organized_scores[i][2] == "1":
                             await channel.send(f"So You are a BE MEMBER")
                         break
-               
+                    
+                ##if he ended the loop, it means that you don't have any invites yet
+                await channel.send("You don't have invited any users yet")
 
 
 client.run(TOKEN)
