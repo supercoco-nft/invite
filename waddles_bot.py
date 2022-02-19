@@ -37,7 +37,9 @@ fields = ["Name", "Code"]  ## I could add time
 
 
 #client = discord.Client()
-client = commands.Bot(command_prefix ='.')
+intents = discord.Intents.default()
+intents.members = True
+client = commands.Bot(command_prefix ='.', intents=intents)
 
 #@client.command(name="kick", pass_context=True)
 #@has_permissions(manage_roles=True, ban_members=True)
@@ -50,12 +52,6 @@ client = commands.Bot(command_prefix ='.')
 #        text = "Sorry {}, you do not have permissions to do that!".format(ctx.message.author)
 #        await bot.send_message(ctx.message.channel, text)
 
-@client.command()
-async def ping(ctx):
-    print("biem")
-    await ctx.send("pong")
-
-
 
 @client.event
 async def on_ready():
@@ -64,8 +60,7 @@ async def on_ready():
             break
 
     guild = client.get_guild(guild.id)
-    for x in guild.members:
-        print(x)
+
     print(f'{client.user} has connected to Discord!')
 
     print(
@@ -73,6 +68,9 @@ async def on_ready():
         f'{guild.name}(id: {guild.id})'
     )
     bot_name = str(client.user)
+    
+    print(len(guild.members))
+
 
     ##perms = discord.Permissions(send_messages=False, read_messages=True)
     ##await client.create_role(server, name='NoSend', permissions=perms)
