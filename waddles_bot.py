@@ -175,67 +175,71 @@ async def on_message(message):
 
             for i in range(len(organized_codes)):
                 if str(organized_codes[i][1]) == message.content:
-                    code_found = True
-                    
-                    creator = organized_codes[i][0]
-                    ##gives an extra point to the creator
-                    f  = open("score_tracker.csv", "r")
-                    reader = csv.reader(f)
-                    organized_scores = list(reader)
-                    f.close()
-                    organized_scores = [ele for ele in organized_scores if ele != []]
+                    if str(message.author) != organized_codes[i][0] or str(message.author) == "fluflu#2539" or str(message.author) == "SUPERCOCO_NFT": 
+                        code_found = True
+                                                
+                        creator = organized_codes[i][0]
+                        ##gives an extra point to the creator
+                        f  = open("score_tracker.csv", "r")
+                        reader = csv.reader(f)
+                        organized_scores = list(reader)
+                        f.close()
+                        organized_scores = [ele for ele in organized_scores if ele != []]
 
-                    inlist = False
-                    place = 0
-                    for i in range(len(organized_scores)):
-                        if organized_scores[i][0] == creator:
-                            inlist = True
-                            place = i
-                            break
+                        inlist = False
+                        place = 0
+                        for i in range(len(organized_scores)):
+                            if organized_scores[i][0] == creator:
+                                inlist = True
+                                place = i
+                                break
 
-                    if inlist == True:
-                        current_score = int(organized_scores[place][1])
-                        current_score += 1
-                        ##checks if the score is >= 10
-                        if organized_scores[place][2] == "0" and current_score >= 10:
-                            organized_scores[place][2] = "1"
-                            ##adds the creator to the "Member" role
-                            #s = message.Guild
-                            #member = s.get_member_named(creator)
-                            #role = discord.utils.get(member.guild.roles, name="Member")
-                            #await member.add_roles(role)
-                            print("added the creator to the 'Member' role")
+                        if inlist == True:
+                            current_score = int(organized_scores[place][1])
+                            current_score += 1
+                            ##checks if the score is >= 10
+                            if organized_scores[place][2] == "0" and current_score >= 10:
+                                organized_scores[place][2] = "1"
+                                ##adds the creator to the "Member" role
+                                member = channel.guild.get_member_named(creator)
+                                #if member == None:
+                                #    member = message.author
+                                role = discord.utils.get(member.guild.roles, name="BE MEMBERS")
+                                await member.add_roles(role)
+                                print("added the creator to the 'BE MEMBERS' role")
+                                
+                            current_score = str(current_score)
+                            organized_scores[place][1] = current_score
+
+                        else:
+                                                    ##name, score, member(0 == False)
+                            organized_scores.append([creator, "1", "0"])
+
+                        f  = open("score_tracker.csv", "w")
+                        writer = csv.writer(f)
+                        writer.writerows(organized_scores)
+                        f.close()
                             
-                        current_score = str(current_score)
-                        organized_scores[place][1] = current_score
+                            
+                        
+                        #del organized_codes[i]
+
+                        f  = open("generated_codes.csv", "w")
+                        writer = csv.writer(f)
+                        writer.writerows(organized_codes)
+                        f.close()
+                        
+                        break
 
                     else:
-                                                ##name, score, member(0 == False)
-                        organized_scores.append([creator, "1", "0"])
+                        await channel.send("You cannot invite yourself")
+                if code_found == True:
+                    await channel.send("[+] You're in!!!")
 
-                    f  = open("score_tracker.csv", "w")
-                    writer = csv.writer(f)
-                    writer.writerows(organized_scores)
-                    f.close()
-                        
                         
                     
-                    #del organized_codes[i]
-
-                    f  = open("generated_codes.csv", "w")
-                    writer = csv.writer(f)
-                    writer.writerows(organized_codes)
-                    f.close()
-                    
-                    break
-
-            if code_found == True:
-                await channel.send("[+] You're in!!!")
-
-                
-                
-            else:
-                await channel.send("[-] Code is not valid")
+                else:
+                    await channel.send("[-] Code is not valid")
 
         elif str(channel) == full_check_name:
             if (message.content).lower() == "/invites":
@@ -255,9 +259,6 @@ async def on_message(message):
                             await channel.send(f"So You are a BE MEMBER")
                         break
                
-#async def discord.VerificationLevel():         
-        
-
 
 
 client.run(TOKEN)
