@@ -7,8 +7,8 @@ from discord.ext import commands#.commands import has_permissions, MissingPermis
 #from discord import Member
 
 load_dotenv()
-TOKEN = os.getenv('DISCORD_TOKEN')
-GUILD = os.getenv('DISCORD_GUILD')
+TOKEN = os.getenv('bot_token')
+GUILD = os.getenv('bot_guild')
 
 
 bot_name = ""
