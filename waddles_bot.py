@@ -36,21 +36,9 @@ all_chars = ['a', 'A', 'b', 'B', 'c', 'C', 'd', 'D', 'e', 'E', 'f', 'F',
 fields = ["Name", "Code"]  ## I could add time
 
 
-#client = discord.Client()
 intents = discord.Intents.default()
 intents.members = True
 client = commands.Bot(command_prefix ='.', intents=intents)
-
-#@client.command(name="kick", pass_context=True)
-#@has_permissions(manage_roles=True, ban_members=True)
-#async def _kick(ctx, member: Member):
-#    await bot.kick(member)#
-
-#@_kick.error
-#async def kick_error(ctx, error):
-#    if isinstance(error, MissingPermissions):
-#        text = "Sorry {}, you do not have permissions to do that!".format(ctx.message.author)
-#        await bot.send_message(ctx.message.channel, text)
 
 
 @client.event
@@ -60,7 +48,7 @@ async def on_ready():
             break
 
     guild = client.get_guild(guild.id)
-
+    
     print(f'{client.user} has connected to Discord!')
 
     print(
@@ -68,13 +56,8 @@ async def on_ready():
         f'{guild.name}(id: {guild.id})'
     )
     bot_name = str(client.user)
-    
-    print(len(guild.members))
 
-
-    ##perms = discord.Permissions(send_messages=False, read_messages=True)
-    ##await client.create_role(server, name='NoSend', permissions=perms)
-
+    print(f"guild_members: {len(guild.members)}")
     
     #invite_channel = await guild.create_text_channel(full_invite_name)
     #join_channel = await guild.create_text_channel(full_join_name)
@@ -90,17 +73,6 @@ async def on_message(message):
     global all_chars
 
     channel = message.channel
-    print(message.author)
-    #member = message.author
-
-    #var = discord.utils.get(message.guild.roles, name = "new_role")
-    #member.add_role(var)
-
-    #server = ctx.message.server
-    #perms = discord.Permissions(send_messages=False, read_messages=True)
-    #await client.create_role(server, name='NoSend', permissions=perms)
-
-
     
     if message.author.guild_permissions.administrator:
         print("the user is admin")
@@ -110,7 +82,6 @@ async def on_message(message):
 
     if str(message.author) != str(client.user):##name of the bot
         if str(channel) == full_invite_name:
-            print("biem")
             if message.content == "/create":
                 ##checks if the code is already generated
                 f = open("generated_codes.csv", "r")
@@ -122,7 +93,6 @@ async def on_message(message):
 
                 code_created = False
                 for i in range(len(organized_codes)):
-                    print(organized_codes[i][0])
                     if str(organized_codes[i][0]) == str(message.author):
                         code_created = True
                         generated_code = organized_codes[i][1]
@@ -173,7 +143,7 @@ async def on_message(message):
 
             for i in range(len(organized_codes)):
                 if str(organized_codes[i][1]) == message.content:
-                    if str(message.author) != organized_codes[i][0] or str(message.author) == "fluflu#2539" or str(message.author) == "SUPERCOCO_NFT": 
+                    if str(message.author) != organized_codes[i][0] or str(message.author) == "fluflu#2539" or str(message.author) == "SUPERCOCO-NFT HQ": 
                         code_found = True
                                                 
                         creator = organized_codes[i][0]
@@ -257,14 +227,13 @@ async def on_message(message):
 
                 for i in range(len(organized_scores)):
                     if organized_scores[i][0] == str(message.author):
-                        print(organized_scores[i][1])
                         await channel.send(f"You have currently invited {organized_scores[i][1]} qualified users")
                         if organized_scores[i][2] == "1":
                             await channel.send(f"So You are a BE MEMBER")
                         break
                     
                 ##if he ended the loop, it means that you don't have any invites yet
-                await channel.send("You don't have invited any users yet")
+                await channel.send("You don't have invited any users yet")  
 
 
 client.run(TOKEN)
