@@ -47,6 +47,11 @@ async def on_ready():
         if guild.name == GUILD:
             break
 
+
+    ##sets discord_status
+    #activity_string = 'on {} servers.'.format(len(client.guilds))
+    await client.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name="getting over it"))
+
     guild = client.get_guild(guild.id)
     
     print(f'{client.user} has connected to Discord!')
@@ -55,9 +60,13 @@ async def on_ready():
         f'{client.user} is connected to the following guild:\n'
         f'{guild.name}(id: {guild.id})'
     )
-    bot_name = str(client.user)
 
     print(f"guild_members: {len(guild.members)}")
+
+    
+
+    
+    ##this part of the code makes the channels
     
     #invite_channel = await guild.create_text_channel(full_invite_name)
     #join_channel = await guild.create_text_channel(full_join_name)
@@ -73,12 +82,6 @@ async def on_message(message):
     global all_chars
 
     channel = message.channel
-    
-    if message.author.guild_permissions.administrator:
-        print("the user is admin")
-    else:
-        print(message.author.guild_permissions.administrator)
-
 
     if str(message.author) != str(client.user):##name of the bot
         if str(channel) == full_invite_name:
@@ -162,30 +165,37 @@ async def on_message(message):
                                 place = i
                                 break
 
-                        if inlist == True:
-                            current_score = int(organized_scores[place][1])
-                            current_score += 1
-                            ##checks if the score is >= 10
-                            if organized_scores[place][2] == "0" and current_score >= 10:
-                                ##adds the creator to the "Member" role
-                                member = channel.guild.get_member_named(creator)
-                                #if member == None:
-                                #    member = message.authorrole = discord.utils.get(member.guild.roles, name="BE MEMBERS")
-                                if member != None:
-                                    role = discord.utils.get(member.guild.roles, name="BE MEMBERS")
-                                    await member.add_roles(role)
-                                    await channel.send("added the creator to the 'BE MEMBERS' role")
-                                    organized_scores[place][2] = "1"
-                                else:
-                                    await channel.send("[-]Creator was not found")
-                                    
-                            current_score = str(current_score)
-                            organized_scores[place][1] = current_score
+                        #invited_people = organized_scores[i][
 
+                        if inlist == True:
+                            invited_people = organized_scores[i][3:]
+                            print(invited_people)
+                            if str(message.author) not in invited_people:
+                                current_score = int(organized_scores[place][1])
+                                current_score += 1
+                                ##checks if the score is >= 10
+                                if organized_scores[place][2] == "0" and current_score >= 10:
+                                    ##adds the creator to the "Member" role
+                                    member = channel.guild.get_member_named(creator)
+                                    #if member == None:
+                                    #    member = message.authorrole = discord.utils.get(member.guild.roles, name="BE MEMBERS")
+                                    if member != None:
+                                        role = discord.utils.get(member.guild.roles, name="BE MEMBERS")
+                                        await member.add_roles(role)
+                                        await channel.send("creator of the invite link added the creator to the 'BE MEMBERS' role")
+                                        organized_scores[place][2] = "1"
+                                    else:
+                                        await channel.send("[-]Creator was not found")
+                                        
+                                current_score = str(current_score)
+                                organized_scores[place][1] = current_score
+                                organized_scores[place].append(str(message.author))
+                            else:
+                                await channel.send(f"The same person can't use an invite 2 times")
+                                return
                         else:
                                                     ##name, score, member(0 == False)
-                            organized_scores.append([creator, "1", "0"])
-                            #await channel.send("Con
+                            organized_scores.append([creator, "1", "0", str(message.author)])
 
                         f  = open("score_tracker.csv", "w")
                         writer = csv.writer(f)
@@ -209,8 +219,6 @@ async def on_message(message):
                         
             if code_found == True:
                 await channel.send("[+] You're in!!!")
-
-                    
                 
             else:
                 await channel.send("[-] Code is not valid")
@@ -225,15 +233,18 @@ async def on_message(message):
                 f.close()
                 organized_scores = [ele for ele in organized_scores if ele != []]
 
+                invited = False
                 for i in range(len(organized_scores)):
                     if organized_scores[i][0] == str(message.author):
+                        invited = True
                         await channel.send(f"You have currently invited {organized_scores[i][1]} qualified users")
                         if organized_scores[i][2] == "1":
                             await channel.send(f"So You are a BE MEMBER")
                         break
                     
-                ##if he ended the loop, it means that you don't have any invites yet
-                await channel.send("You don't have invited any users yet")  
+                if invited == False:
+                    await channel.send("You don't have invited any users yet")               
+
 
 
 client.run(TOKEN)
